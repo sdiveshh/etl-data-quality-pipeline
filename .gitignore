@@ -1,0 +1,6 @@
+﻿venv/
+data/raw/
+data/processed/
+data/rejected/
+__pycache__/
+*.pyc
