@@ -1,6 +1,6 @@
 # ETL Pipeline with Data Quality Monitoring
 
-An end-to-end data engineering pipeline that ingests raw e-commerce data, runs automated data quality checks, transforms and enriches it, loads it into a Postgres warehouse, and visualizes pipeline health and business insights on a live dashboard.
+An end-to-end data engineering pipeline that ingests raw e-commerce data, runs automated data quality checks, transforms and enriches it, loads it into a Postgres warehouse, and visualizes pipeline health and business insights on a live Power BI dashboard.
 
 Built to demonstrate Data Engineer, Data Analyst, and Software Engineer skills in one project: orchestration-ready pipeline design, SQL warehousing, data validation, and dashboarding.
 
@@ -24,7 +24,7 @@ Raw CSVs (data/raw/)
   Postgres (Docker) -> orders_enriched, pipeline_run_log tables
       |
       v
-  dashboard.py -> Streamlit dashboard, live queries against Postgres
+  Power BI -> live connection to Postgres, pipeline health + business insights dashboard
 
 ## Dataset
 
@@ -34,7 +34,7 @@ Raw CSVs (data/raw/)
 
 - Language: Python (pandas, SQLAlchemy)
 - Warehouse: PostgreSQL, running in Docker
-- Dashboard: Streamlit
+- Dashboard: Power BI Desktop, connected live via the PostgreSQL connector
 - Containerization: Docker + docker-compose
 - Orchestration: Apache Airflow (DAG included, see dags/)
 - Version control: Git/GitHub
@@ -60,6 +60,7 @@ Failing rows are never silently dropped - they are written to data/rejected/ wit
 - Python 3.10+
 - Docker Desktop
 - Git
+- Power BI Desktop
 
 ### 2. Clone and set up
 
@@ -84,11 +85,14 @@ python scripts/validate.py
 python scripts/transform.py
 python scripts/load.py
 
-### 6. Launch the dashboard
+### 6. Connect Power BI to the warehouse
 
-streamlit run dashboard.py
-
-Visit http://localhost:8501 to view pipeline health, data quality summary, and business insights.
+1. Install the Npgsql driver (required for Power BI's PostgreSQL connector): https://github.com/npgsql/npgsql/releases
+2. Open Power BI Desktop -> Get Data -> PostgreSQL database
+3. Server: localhost:5432   Database: etl_warehouse
+4. Username: etl_user   Password: etl_password (Database authentication)
+5. Select the orders_enriched and pipeline_run_log tables and load
+6. Build visuals: orders by state, delivery delay distribution, total order value, and a pipeline health card from pipeline_run_log
 
 ## Project Structure
 
@@ -103,7 +107,7 @@ etl-data-quality-pipeline/
 |   |-- validate.py
 |   |-- transform.py
 |   |-- load.py
-|-- dashboard.py            # Streamlit dashboard
+|-- dashboard.pbix          # Power BI dashboard (add after building)
 |-- docker-compose.yml      # Postgres service
 |-- requirements.txt
 |-- README.md
